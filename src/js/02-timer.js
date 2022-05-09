@@ -8,7 +8,7 @@ const dataSeconds = document.querySelector('[data-seconds]');
 const input = document.querySelector('input#datetime-picker');
 const btnStart = document.querySelector('[data-start]');
 
-let intervalId = null;
+let interval = null;
 
 btnStart.disabled = true;
 
@@ -47,23 +47,23 @@ function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
 
-function populateDate(config) {
-  dataDays.textContent = addLeadingZero(config.days);
-  dataHours.textContent = addLeadingZero(config.hours);
-  dataMinutes.textContent = addLeadingZero(config.minutes);
-  dataSeconds.textContent = addLeadingZero(config.seconds);
+function populateDate(formated) {
+  dataDays.textContent = addLeadingZero(formated.days);
+  dataHours.textContent = addLeadingZero(formated.hours);
+  dataMinutes.textContent = addLeadingZero(formated.minutes);
+  dataSeconds.textContent = addLeadingZero(formated.seconds);
 }
 
 function btnStartClick() {
-  intervalId = setInterval(() => {
+  interval = setInterval(() => {
     const newDate = new Date();
     const selectedData = funLibFlatpickr.selectedDates[0];
-    const timerData = selectedData.getTime() - newDate.getTime();
-    if (timerData < 0) {
-      clearInterval(intervalId);
+    const timer = selectedData.getTime() - newDate.getTime();
+    if (timer < 0) {
+      clearInterval(interval);
       return;
     }
-    const convertedData = convertMs(timerData);
+    const convertedData = convertMs(timer);
     populateDate(convertedData);
     btnStart.disabled = true;
   }, 1000);
