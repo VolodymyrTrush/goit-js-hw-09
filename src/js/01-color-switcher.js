@@ -1,7 +1,7 @@
 const refs = {
   btnStart: document.querySelector('button[data-start]'),
   btnStop: document.querySelector('button[data-stop]'),
-}
+};
 
 const INTERVAL_CHANGE = 1000;
 let interval = null;
@@ -24,4 +24,3 @@ function onBtnStop() {
 
 refs.btnStart.addEventListener('click', onBtnStart);
 refs.btnStop.addEventListener('click', onBtnStop);
-

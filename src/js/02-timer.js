@@ -1,44 +1,72 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
+const dataDays = document.querySelector('[data-days]');
+const dataHours = document.querySelector('[data-hours]');
+const dataMinutes = document.querySelector('[data-minutes]');
+const dataSeconds = document.querySelector('[data-seconds]');
+const input = document.querySelector('input#datetime-picker');
+const btnStart = document.querySelector('[data-start]');
 
-// ----------------------------------------------------------------------
+let intervalId = null;
 
-// document.addEventListener('DOMContentLoaded', function () {
-//   // конечная дата, например 1 июля 2021
-//   const deadline = new Date(2021, 06, 01);
-//   // id таймера
-//   let timerId = null;
-//   // склонение числительных
-//   function declensionNum(num, words) {
-//     return words[
-//       num % 100 > 4 && num % 100 < 20 ? 2 : [2, 0, 1, 1, 1, 2][num % 10 < 5 ? num % 10 : 5]
-//     ];
-//   }
-//   // вычисляем разницу дат и устанавливаем оставшееся времени в качестве содержимого элементов
-//   function countdownTimer() {
-//     const diff = deadline - new Date();
-//     if (diff <= 0) {
-//       clearInterval(timerId);
-//     }
-//     const days = diff > 0 ? Math.floor(diff / 1000 / 60 / 60 / 24) : 0;
-//     const hours = diff > 0 ? Math.floor(diff / 1000 / 60 / 60) % 24 : 0;
-//     const minutes = diff > 0 ? Math.floor(diff / 1000 / 60) % 60 : 0;
-//     const seconds = diff > 0 ? Math.floor(diff / 1000) % 60 : 0;
-//     $days.textContent = days < 10 ? '0' + days : days;
-//     $hours.textContent = hours < 10 ? '0' + hours : hours;
-//     $minutes.textContent = minutes < 10 ? '0' + minutes : minutes;
-//     $seconds.textContent = seconds < 10 ? '0' + seconds : seconds;
-//     $days.dataset.title = declensionNum(days, ['день', 'дня', 'дней']);
-//     $hours.dataset.title = declensionNum(hours, ['час', 'часа', 'часов']);
-//     $minutes.dataset.title = declensionNum(minutes, ['минута', 'минуты', 'минут']);
-//     $seconds.dataset.title = declensionNum(seconds, ['секунда', 'секунды', 'секунд']);
-//   }
-//   // получаем элементы, содержащие компоненты даты
-//   const $days = document.querySelector('.timer__days');
-//   const $hours = document.querySelector('.timer__hours');
-//   const $minutes = document.querySelector('.timer__minutes');
-//   const $seconds = document.querySelector('.timer__seconds');
-//   // вызываем функцию countdownTimer
-//   countdownTimer();
-//   // вызываем функцию countdownTimer каждую секунду
-//   timerId = setInterval(countdownTimer, 1000);
-// });
+btnStart.disabled = true;
+
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    const date = new Date();
+    if (selectedDates[0].getTime() < date.getTime()) {
+      return window.alert('Please choose a date in the future');
+    } else {
+      btnStart.disabled = false;
+    }
+  },
+};
+
+const funLibFlatpickr = flatpickr(input, options);
+
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
+
+function populateDate(config) {
+  dataDays.textContent = addLeadingZero(config.days);
+  dataHours.textContent = addLeadingZero(config.hours);
+  dataMinutes.textContent = addLeadingZero(config.minutes);
+  dataSeconds.textContent = addLeadingZero(config.seconds);
+}
+
+function btnStartClick() {
+  intervalId = setInterval(() => {
+    const newDate = new Date();
+    const selectedData = funLibFlatpickr.selectedDates[0];
+    const timerData = selectedData.getTime() - newDate.getTime();
+    if (timerData < 0) {
+      clearInterval(intervalId);
+      return;
+    }
+    const convertedData = convertMs(timerData);
+    populateDate(convertedData);
+    btnStart.disabled = true;
+  }, 1000);
+}
+
+btnStart.addEventListener('click', btnStartClick);
