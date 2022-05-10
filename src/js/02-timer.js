@@ -1,16 +1,18 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const dataDays = document.querySelector('[data-days]');
-const dataHours = document.querySelector('[data-hours]');
-const dataMinutes = document.querySelector('[data-minutes]');
-const dataSeconds = document.querySelector('[data-seconds]');
-const input = document.querySelector('input#datetime-picker');
-const btnStart = document.querySelector('[data-start]');
+const refs = {
+  dataDays: document.querySelector('[data-days]'),
+  dataHours: document.querySelector('[data-hours]'),
+  dataMinutes: document.querySelector('[data-minutes]'),
+  dataSeconds: document.querySelector('[data-seconds]'),
+  input: document.querySelector('input#datetime-picker'),
+  btnStart: document.querySelector('[data-start]'),
+};
 
 let interval = null;
 
-btnStart.disabled = true;
+refs.btnStart.disabled = true;
 
 const options = {
   enableTime: true,
@@ -22,12 +24,12 @@ const options = {
     if (selectedDates[0].getTime() < date.getTime()) {
       return window.alert('Please choose a date in the future');
     } else {
-      btnStart.disabled = false;
+      refs.btnStart.disabled = false;
     }
   },
 };
 
-const funLibFlatpickr = flatpickr(input, options);
+const funLibFlatpickr = flatpickr(refs.input, options);
 
 function convertMs(ms) {
   const second = 1000;
@@ -48,10 +50,10 @@ function addLeadingZero(value) {
 }
 
 function populateDate(formated) {
-  dataDays.textContent = addLeadingZero(formated.days);
-  dataHours.textContent = addLeadingZero(formated.hours);
-  dataMinutes.textContent = addLeadingZero(formated.minutes);
-  dataSeconds.textContent = addLeadingZero(formated.seconds);
+  refs.dataDays.textContent = addLeadingZero(formated.days);
+  refs.dataHours.textContent = addLeadingZero(formated.hours);
+  refs.dataMinutes.textContent = addLeadingZero(formated.minutes);
+  refs.dataSeconds.textContent = addLeadingZero(formated.seconds);
 }
 
 function btnStartClick() {
@@ -65,8 +67,8 @@ function btnStartClick() {
     }
     const convertedData = convertMs(timer);
     populateDate(convertedData);
-    btnStart.disabled = true;
+    refs.btnStart.disabled = true;
   }, 1000);
 }
 
-btnStart.addEventListener('click', btnStartClick);
+refs.btnStart.addEventListener('click', btnStartClick);
