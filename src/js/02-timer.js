@@ -12,8 +12,6 @@ const refs = {
 
 let interval = null;
 
-refs.btnStart.disabled = true;
-
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -22,7 +20,8 @@ const options = {
   onClose(selectedDates) {
     const date = new Date();
     if (selectedDates[0].getTime() < date.getTime()) {
-      return window.alert('Please choose a date in the future');
+      window.alert('Please choose a date in the future');
+      return populateDate({ days: '00', hours: '00', minutes: '00', seconds: '00' });
     } else {
       refs.btnStart.disabled = false;
     }

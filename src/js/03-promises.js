@@ -1,8 +1,10 @@
+import Notiflix from 'notiflix';
+
 const form = document.querySelector('form');
 
 let dataForm = {};
 
-function FormInput(e) {
+function formInput(e) {
   dataForm[e.target.name] = e.target.value;
 }
 
@@ -17,7 +19,7 @@ function createPromise(position, delay) {
   });
 }
 
-function FormSubmit(e) {
+function formSubmit(e) {
   e.preventDefault();
 
   let time = +dataForm.delay;
@@ -25,11 +27,11 @@ function FormSubmit(e) {
   for (let i = 0; i < dataForm.amount; i += 1) {
     setTimeout(() => {
       createPromise(i + 1, time + i * +dataForm.step)
-        .then(message => success(message))
-        .catch(message => failure(message));
+        .then(message => Notiflix.Notify.success(message))
+        .catch(message => Notiflix.Notify.failure(message));
     }, time + i * +dataForm.step);
   }
 }
 
-form.addEventListener('input', FormInput);
-form.addEventListener('submit', FormSubmit);
+form.addEventListener('input', formInput);
+form.addEventListener('submit', formSubmit);
